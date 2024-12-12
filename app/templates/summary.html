@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary - WalletSync</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #f3f4f6, #eef2f3);
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #ffffff;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            color: #6a11cb;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .budget-info {
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+
+        .budget-info p {
+            margin: 5px 0;
+            color: #34495e;
+        }
+
+        .budget-info strong {
+            color: #6a11cb;
+        }
+
+        /* Chart Styling */
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .budget-info {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Summary</h1>
+
+        <div class="budget-info">
+            <p><strong>Budget Amount:</strong> ₹{{ budget_amount }}</p>
+            <p><strong>Total Expenses:</strong> ₹{{ total_expenses }}</p>
+            <p><strong>Remaining Budget:</strong> ₹{{ remaining_budget }}</p>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <canvas id="expensesChart"></canvas>
+        </div>
+
+        <script>
+            // Get the chart data from Django context
+            const chartData = JSON.parse('{{ chart_data|escapejs }}');
+            console.log(chartData);  // For debugging
+
+            // Create the chart
+            const ctx = document.getElementById('expensesChart').getContext('2d');
+            const expensesChart = new Chart(ctx, {
+                type: 'bar',  // You can also choose 'line', 'pie', etc.
+                data: chartData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#34495e',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

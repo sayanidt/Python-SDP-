@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalletSync - Transactions</title>
+    <style>
+        /* Base Colors */
+        :root {
+            --primary-gradient-start: #00B4D8;  /* Bright Blue */
+            --primary-gradient-end: #0077B6;    /* Deep Blue */
+            --secondary-gradient-start: #FF6F61; /* Warm Coral */
+            --secondary-gradient-end: #D53F28;   /* Dark Coral */
+            --income-color: #28A745;  /* Green */
+            --expense-color: #DC3545; /* Red */
+            --background-color: #f4f6f9; /* Light Grey */
+            --card-background: #ffffff; /* White */
+            --text-primary: #333333;   /* Dark Text */
+            --text-secondary: #777777; /* Light Text */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .transaction-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Financial Overview Styles */
+        .balance-overview {
+            background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .balance-overview h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .balance-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-background);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-card h4 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .income-value {
+            color: var(--income-color);
+        }
+
+        .expense-value {
+            color: var(--expense-color);
+        }
+
+        /* Transactions Section */
+        .transactions-section {
+            margin-top: 40px;
+            animation: slideIn 1s ease-out;
+        }
+
+        .transactions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .transactions-header h3 {
+            color: var(--primary-gradient-start);
+            font-size: 22px;
+        }
+
+        .add-transaction-btn {
+            background-color: var(--secondary-gradient-start);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .add-transaction-btn:hover {
+            background-color: var(--secondary-gradient-end);
+        }
+
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .transaction-table th, .transaction-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .transaction-table th {
+            background-color: #f0f0f0;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .transaction-row {
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .transaction-row:hover {
+            transform: scale(1.02);
+            background-color: #f9f9f9;
+        }
+
+        .transaction-type {
+            font-weight: bold;
+        }
+
+        /* Animation Effects */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .balance-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .stat-card {
+                width: 100%;
+            }
+
+            .transaction-table th, .transaction-table td {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .transaction-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="transaction-container">
+        <!-- Financial Overview -->
+        <div class="balance-overview">
+            <h2 style="text-align: center;">Financial Overview</h2>
+            <div class="balance-stats">
+                <div class="stat-card">
+                    <h4>Total Balance</h4>
+                    <div class="stat-value">₹{{ total_balance }}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Income</h4>
+                    <div class="stat-value income-value">₹{{ total_income }}</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Expenses</h4>
+                    <div class="stat-value expense-value">₹{{ total_expense }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="transactions-section">
+            <div class="transactions-header">
+                <h3>Recent Transactions</h3>
+                <!-- Add Transaction Form -->
+                <form method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="add-transaction-btn" type="submit">+ Add Transaction</button>
+                </form>
+            </div>
+
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="transaction-row">
+                        <td>{{ transaction.date }}</td>
+                        <td>{{ transaction.description }}</td>
+                        <td>
+                            <span class="transaction-type {% if transaction.transaction_type == 'Income' %}income-type{% else %}expense-type{% endif %}">
+                                {{ transaction.transaction_type }}
+                            </span>
+                        </td>
+                        <td class="{% if transaction.transaction_type == 'Income' %}income-value{% else %}expense-value{% endif %}">
+                            ₹{{ transaction.amount }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-secondary);">No transactions available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

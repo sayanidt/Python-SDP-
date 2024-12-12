@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Jost', sans-serif;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+        }
+
+        .container {
+            width: 350px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            width: 80%;
+            color: #ddd;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        input {
+            width: 80%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #e0dede;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button {
+            width: 80%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #573b8a;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #6d44b8;
+        }
+
+        p {
+            margin-top: 20px;
+            color: #ccc;
+        }
+
+        a {
+            color: #6d44b8;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create an Account</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" name="username" required>
+
+            <label for="email">Email</label>
+            <input type="email" name="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password1" required>
+
+            <label for="password2">Confirm Password</label>
+            <input type="password" name="password2" required>
+
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</body>
+</html>
